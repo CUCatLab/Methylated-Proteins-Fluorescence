@@ -12,8 +12,7 @@ import plotly.express as px
 import ipywidgets as ipw
 from ipywidgets import Button, Layout
 from lmfit import model, Model
-from lmfit.models import GaussianModel, SkewedGaussianModel, VoigtModel, ConstantModel, LinearModel, QuadraticModel, PolynomialModel
-from lmfitxps.models import ShirleyBG
+from lmfit.models import GaussianModel, SkewedGaussianModel, VoigtModel, ConstantModel, LinearModel
 import re
 import os
 from os import listdir
@@ -84,6 +83,7 @@ class dataTools () :
             else :
                 tempDataColumn = tempData[1]
                 data = pd.concat([data,tempDataColumn], axis=1)
+        data = data.reindex(sorted(data.columns), axis=1)
 
         data.columns = columns
         data = data.set_index('nm')
@@ -96,7 +96,6 @@ class dataTools () :
         Max = np.max(range)
         Mask = np.all([data.index>Min,data.index<Max],axis=0)
         data = data[Mask]
-        print(Mask)
         
         return data
 
@@ -251,7 +250,7 @@ class fitTools :
             
             sys.stdout.write(("\rFitting %i out of "+str(len(data.columns))) % (idx+1))
             sys.stdout.flush()
-            
+
         self.Fits = Fits
         self.FitsParameters = FitsParameters
         self.FitsResults = FitsResults
@@ -361,6 +360,11 @@ class fitTools :
                     self.data.to_excel(writer, sheet_name="Data")
                     self.Fits.to_excel(writer, sheet_name="Fits")
                     Parameters = self.FitsParameters.transpose()
+                    peaks_amplitude = np.zeros((len(self.NInt)))
+                    for column in Parameters.columns :
+                        if 'amplitude' in column :
+                            peaks_amplitude += Parameters[column]
+                    Parameters['peaks_amplitude'] = peaks_amplitude
                     Parameters['NInt'] = self.NInt
                     Parameters.to_excel(writer, sheet_name="Parameters")
         saveData = ipw.Button(description="Save Data")

@@ -1,10 +1,16 @@
 'Rh 50uM-tube':
   folder: 'C:/Users/larue/Chapman University/LaRue CatLab - Data/2024/2024.01.23/Rh 50uM-tube'
-  range: [540,700]
+  range: [540,750]
   Models:
     Peak1:
       assignment: 'Peak 1'
       model: 'Gaussian'
       amplitude: {value: 0, min: 0, vary: True}
-      center: {value: 600, min: 540, vary: True}
-      sigma: {value: 20, vary: True}
+      center: {value: 576, min: 540, vary: True}
+      sigma: {value: 20, min: 12, vary: True}
+    Peak2:
+      assignment: 'Peak 2'
+      model: 'Gaussian'
+      amplitude: {value: 0, min: 0, vary: True}
+      center: {value: 603, min: 600, vary: True}
+      sigma: {value: 20, min: 27, vary: True}
